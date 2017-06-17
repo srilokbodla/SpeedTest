@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<body ng-app="SpeedTest" class="bodyStyle">
+<div class="container">
+    <div class="jumbotron header">
+        <h2> Speed Test</h2>
+        <h5> Type the given passage as quick as possible to measure your speed</h5>
+    </div>
+    <div ng-controller="SpeedController">
+        <div style="margin: 10px; margin-left: 5px;">
+            <button ng-click="start()" type="button" class="btn btn-success">Run</button>
+        </div>
+        <p>Time left :{{timeLeft}}</p>
+        <form name="inputform">
+            <div class="form-group" style="margin-left: 5px">
+                <label style="color: azure;" for="input">Type here:</label>
+                <textarea ng-disabled="disableValue" id="input" name="inputArea" ng-model="text" class="form-control"
+                          rows="8"></textarea>
+            </div>
+        </form>
+        <p>Your score is : {{score}}</p>
+        <div style="margin: 10px; margin-left: 5px;">
+            <button ng-click="reset()" type="button" class="btn btn-success">Reset</button>
+        </div>
+    </div>
+</div>
+</body>
+<head>
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css"/>
+    <link rel="stylesheet" href="styles.css"/>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        var app = angular.module("SpeedTest", []);
+        app.controller("SpeedController", function ($scope, $timeout) {
+
+            $scope.disableValue = true;
+            var runCounter;
+            var countDown = 60;
+            $scope.counterRunning = false;
+            $scope.timeLeft = countDown;
+            runCounter = function () {
+                $scope.timeLeft = countDown;
+                if (countDown == 0) {
+                    $scope.disableValue = "true";
+                    $scope.score = 0;
+                    $scope.score = $scope.text.length;
+                    $scope.counterRunning = false;
+                    return;
+                }
+                countDown--;
+                $timeout(runCounter, 1000);
+                return;
+            };
+            $scope.start = function () {
+                document.inputform.inputArea.focus();
+                $scope.disableValue = false;
+                $scope.counterRunning = true;
+                runCounter();
+            };
+            $scope.reset = function () {
+                if (!$scope.counterRunning) {
+                    $scope.text = '';
+                    $scope.score = 0;
+                    $scope.timeLeft = countDown = 10;
+                }
+            }
+        });
+    </script>
+</head>
+</html>
